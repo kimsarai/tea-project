@@ -28,25 +28,14 @@ class Feature (SQLModel, table=True):
     product_id: int = Field(default=None, foreign_key="product.id")
     product: Product | None = Relationship(back_populates="feature")
     
-    # product_id: int = Field()
-    # floral: int = Field()
-    # fruity: int = Field()
-    # astringency: int = Field()
-    # sweetness: int = Field()
-    # refreshing: int = Field()
-    # aromatic: int = Field()
-    # richness: int = Field()
-    # process: str = Field()
-
-    sweetness: int = Field()
-    bitterness: int = Field()
     fruity: int = Field()
-    tannic: int = Field()
-    acidity: int = Field()
-    richness: int = Field()
-
     floral: int = Field()
+    astringency: int = Field()
+    sweetness: int = Field()
+    refreshing: int = Field()
+    aromatic: int = Field()
+    rich: int = Field()
+    smoky: int = Field()
+    creamy: int = Field()
 
-    region: str = Field(sa_type=String(50), max_length=50)
-    process: str = Field()
 

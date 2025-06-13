@@ -18,27 +18,29 @@ class ProductResponse(SQLModel):
 
 class FeatureCreate(SQLModel):
     product_id: int 
-    sweetness: int 
-    bitterness: int 
-    fruity: int 
-    tannic: int 
-    acidity: int 
-    richness: int 
-    
+    fruity: int
     floral: int
+    astringency: int
+    sweetness: int 
+    refreshing: int
+    aromatic: int
+    rich: int
+    smoky: int
+    creamy: int
 
-    region: str 
-    process: str 
 
 class FeatureResponse(SQLModel):
     id: int 
     product_id: int 
+    fruity: int
+    floral: int
+    astringency: int
     sweetness: int 
-    bitterness: int 
-    fruity: int 
-    tannic: int 
-    acidity: int 
-    richness: int 
+    refreshing: int
+    aromatic: int
+    rich: int
+    smoky: int
+    creamy: int
 
 
 # user
@@ -68,3 +70,4 @@ class Token(SQLModel):
 
 class TokenData(SQLModel):
     username: str | None = None
+
