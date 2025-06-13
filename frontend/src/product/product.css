@@ -1,0 +1,23 @@
+h1 {
+    position: relative;
+    color: #8e8a8a;
+    text-shadow: 0 0 2px white;
+    background: #d9efac;
+    z-index: -4;
+    border-radius: 0 10px 10px;
+    padding: 10px;
+  }
+  
+  h1:before {
+    content: "";
+    position: absolute;
+    background: #c3ef62;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    top: 50%;
+    left: -15px;
+    -webkit-transform: translateY(-50%);
+    transform: translateY(-50%);
+    z-index: -1;
+  }

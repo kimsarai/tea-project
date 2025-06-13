@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>あなたにぴったりのお茶を</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
+            background-color: #fff0fd;
+            color: #4b3b2a;
+            padding-top: 70px;
+        }
+
+        .hero {
+            background: url('https://source.unsplash.com/1600x600/?tea,nature') no-repeat center center;
+            background-size: cover;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+        }
+
+        .section {
+            padding: 60px 0;
+        }
+
+        .btn-custom {
+            background-color: #a3c585;
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background-color: #8bb06f;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ナビゲーションメニュー -->
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top" style="background-color:#c3ef62">
+        <a class="navbar-brand d-flex align-items-center text-dark" href="#">
+            <i class="bi bi-cup-fill mr-2" style="font-size: 2rem;"></i> 茶茶
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link text-dark" href="./allproduct/allproduct.html">商品一覧</a>
+                <a class="nav-link text-dark" href="./sinndan/index.html">お茶診断</a>
+                <a class="nav-link text-dark" href="./contact/index.html">お問い合わせ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ヒーローセクション -->
+    <div class="hero text-center">
+            <div>
+                <h1>お茶する？</h1>
+                <p>あなたにぴったりの茶葉をお届け</p>
+                <a href="./sinndan/index.html" class="btn btn-custom btn-lg mt-3">診断をはじめる</a>
+            </div>
+        </div>
+        
+    <!-- サービス紹介 -->
+    <div id="about" class="container section text-center">
+    <!-- div id="diagnosis" class="section bg-light text-center" style="margin-top: 100px;"-->
+        <h2 class="mb-4">サービスの特徴</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <h4>簡単診断</h4>
+                <p>5つの質問で、あなたに合ったお茶を提案。</p>
+                <img src="https://tse3.mm.bing.net/th/id/OIP.jsefLxHWgIax1dPZ7ZPJBQHaE7?w=306&h=203&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" class="img-fluid mb-3" alt="茶葉">
+            </div>
+            <div class="col-md-4">
+                <h4>季節のブレンド</h4>
+                <p>お花や果物をブレンドした、香り豊かなお茶。</p>
+                <img src="https://imageslabo.com/wp-content/uploads/2019/05/213_japanese-tea_6639.jpg" class="img-fluid mb-3" alt="お茶">
+            </div>
+            <div class="col-md-4">
+                <h4>定期便</h4>
+                <p>毎月届く、ちょっと特別なティータイム。</p>
+                <img src="https://tse4.mm.bing.net/th/id/OIP.L2eWkpXW83EFpAnVP0UwyAHaE8?w=277&h=185&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3" class="img-fluid mb-3" alt="宅配">
+            </div>
+        </div>
+    </div>
+
+    <!-- 診断セクション -->
+    <div id="diagnosis" class="section bg-light text-center">
+        <div class="container">
+            <h2 class="mb-4">お茶診断</h2>
+            <p>気分や体調に合わせて、ぴったりのお茶を見つけましょう。</p>
+            <a href="./sinndan/index.html" class="btn btn-custom btn-lg mt-3">診断をはじめる</a>
+        </div>
+    </div>
+
+    <!-- お問い合わせ（仮） -->
+    <div id="contact" class="section text-center">
+        <div class="container">
+            <h2 class="mb-4">お問い合わせ</h2>
+            <p>ご質問・ご相談はお気軽にどうぞ。</p>
+            <a href="#" class="btn btn-outline-secondary">フォームへ</a>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</body>
+
+</html>

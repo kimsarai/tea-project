@@ -1,0 +1,9 @@
+fastapi[standard]
+uvicorn[standard]
+sqlalchemy
+pymysql
+cryptography
+sqlmodel 
+python-jose[cryptography]
+passlib[bcrypt]
+PyJWT

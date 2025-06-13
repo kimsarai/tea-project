@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>お茶診断</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
+            background-color: #fff0fd;
+            color: #4b3b2a;
+            padding-top: 70px;
+        }
+
+        .hero {
+            background: url('https://source.unsplash.com/1600x600/?tea,nature') no-repeat center center;
+            background-size: cover;
+            height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+        }
+
+        .section {
+            padding: 60px 0;
+        }
+
+        .btn-custom {
+            background-color: #a3c585;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #8bb06f;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary-custom {
+            background-color: #f8f9fa;
+            color: #4b3b2a;
+            border: 2px solid #a3c585;
+        }
+
+        .btn-secondary-custom:hover {
+            background-color: #a3c585;
+            color: white;
+        }
+
+        .question-step {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress {
+            height: 10px;
+            border-radius: 5px;
+            background-color: #e9ecef;
+        }
+
+        .progress-bar {
+            background: linear-gradient(45deg, #a3c585, #c3ef62);
+            transition: width 0.5s ease;
+        }
+
+        .form-check {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+
+        .form-check-input {
+            width: 20px;
+            height: 20px;
+            margin-left: -30px;
+            margin-top: 2px;
+        }
+
+        .form-check-label {
+            font-size: 1.1rem;
+            padding-left: 10px;
+            cursor: pointer;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #a3c585, #c3ef62);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .tea-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: block;
+            object-fit: cover;
+            border: 5px solid white;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .error-message {
+            display: none;
+            color: #dc3545;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ナビゲーションメニュー -->
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top" style="background-color:#c3ef62">
+        <a class="navbar-brand d-flex align-items-center text-dark" href="#">
+            <i class="bi bi-cup-fill mr-2" style="font-size: 2rem;"></i> 茶茶
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link text-dark" href="../allproduct/allproduct.html">商品一覧</a>
+                <a class="nav-link text-dark" href="../sinndan/index.html">お茶診断</a>
+                <a class="nav-link text-dark" href="../contact/index.html">お問い合わせ</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 診断フォームセクション -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">進捗</span>
+                        <span class="text-muted" id="progressText">1 / 3</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" id="progressBar" style="width: 33%"></div>
+                    </div>
+                </div>
+
+                <!-- Step 1: Taste Preference -->
+                <div id="step1" class="question-step">
+                    <h4><i class="bi bi-emoji-smile mr-2"></i>好みのお茶の種類は？</h4>
+                    <div class="mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="taste" value="甘い" id="taste1">
+                            <label class="form-check-label" for="taste1">紅茶（発酵茶）</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="taste" value="苦い" id="taste2">
+                            <label class="form-check-label" for="taste2">日本茶（不発酵茶）</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="taste" value="酸っぱい" id="taste3">
+                            <label class="form-check-label" for="taste3">烏龍茶（半発酵茶）</label>
+                        </div>
+                        <!-- <div class="form-check">
+                            <input class="form-check-input" type="radio" name="taste" value="渋い" id="taste4">
+                            <label class="form-check-label" for="taste4">渋い</label>
+                        </div> -->
+                    </div>
+                    <div class="text-right mt-4">
+                        <button class="btn btn-custom" onclick="nextStep(2)">
+                            次へ <i class="bi bi-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Time Preference -->
+                <div id="step2" class="question-step" style="display:none;">
+                    <h4><i class="bi bi-heart mr-2"></i>こだわりのお茶の特徴は？</h4>
+                    <div class="mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="time" value="朝" id="time1">
+                            <label class="form-check-label" for="time1">フルーティー</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="time" value="昼" id="time2">
+                            <label class="form-check-label" for="time2">フローラル</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="time" value="夜" id="time3">
+                            <label class="form-check-label" for="time3">渋み</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="time" value="夜" id="time3">
+                            <label class="form-check-label" for="time3">甘み</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="time" value="夜" id="time3">
+                            <label class="form-check-label" for="time3">爽やか</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="time" value="夜" id="time3">
+                            <label class="form-check-label" for="time3">香ばしい</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="time" value="夜" id="time3">
+                            <label class="form-check-label" for="time3">コク</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="time" value="夜" id="time3">
+                            <label class="form-check-label" for="time3">クリーミー</label>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <button class="btn btn-secondary-custom" onclick="prevStep(1)">
+                            <i class="bi bi-arrow-left mr-2"></i>戻る
+                        </button>
+                        <button class="btn btn-custom" onclick="nextStep(3)">
+                            次へ <i class="bi bi-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Mood -->
+                <div id="step3" class="question-step" style="display:none;">
+                    <h4><i class=""></i>希望の価格は？</h4>
+                    <div class="mt-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mood" value="リラックス" id="mood1">
+                            <label class="form-check-label" for="mood1">リラックス</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mood" value="元気" id="mood2">
+                            <label class="form-check-label" for="mood2">元気</label>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-4">
+                        <button class="btn btn-secondary-custom" onclick="prevStep(2)">
+                            <i class="bi bi-arrow-left mr-2"></i>戻る
+                        </button>
+                        <button class="btn btn-custom" onclick="showResult()">
+                            診断結果を見る <i class="bi bi-search ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loading" class="loading-spinner">
+                    <div class="spinner-border text-success" role="status">
+                        <span class="sr-only">読み込み中...</span>
+                    </div>
+                    <p class="mt-2">あなたにぴったりのお茶を探しています...</p>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error" class="error-message">
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle mr-2"></i>
+                        エラーが発生しました。もう一度お試しください。
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div id="result" class="question-step" style="display:none;">
+                    <div class="result-card">
+                        <h3><i class="bi bi-star-fill mr-2"></i>あなたにおすすめのお茶は…</h3>
+                        <img id="teaImage" class="tea-image" src="" alt="Tea Image">
+                        <h4 id="teaName" class="mt-3 mb-3"></h4>
+                        <p id="teaDescription" class="lead"></p>
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <strong>価格:</strong> <span id="teaPrice"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>カテゴリ:</strong> <span id="teaCategory"></span>
+                            </div>
+                        </div>
+                        <button class="btn btn-light mt-4" onclick="restartDiagnosis()">
+                            <i class="bi bi-arrow-clockwise mr-2"></i>もう一度診断する
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="shindan3.js"></script>
+
+    <!-- Optional JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</body>
+
+</html>
