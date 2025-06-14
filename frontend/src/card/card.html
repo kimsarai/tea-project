@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>お支払い - あなたにぴったりのお茶を</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Hiragino Kaku Gothic ProN', sans-serif;
+            background-color: #fff0fd;
+            color: #4b3b2a;
+            padding-top: 70px;
+        }
+        .payment-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .payment-header {
+            background: linear-gradient(135deg, #c3ef62, #a3c585);
+            color: #4b3b2a;
+            padding: 20px;
+            text-align: center;
+        }
+        .order-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+        }
+        .card-form {
+            padding: 20px;
+        }
+        .form-group label {
+            font-weight: 600;
+            color: #4b3b2a;
+        }
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #c3ef62;
+            box-shadow: 0 0 0 0.2rem rgba(195, 239, 98, 0.25);
+        }
+        .btn-payment {
+            background: linear-gradient(135deg, #c3ef62, #a3c585);
+            color: #4b3b2a;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        .btn-payment:hover {
+            background: linear-gradient(135deg, #a3c585, #8ba56b);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .btn-payment:disabled {
+            background: #6c757d;
+            color: white;
+            transform: none;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+        }
+        .card-icon {
+            display: inline-block;
+            width: 40px;
+            height: 25px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        .visa { 
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzAwNTFBNSIvPgo8dGV4dCB4PSI1IiB5PSIxNiIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9ImJvbGQiPlZJU0E8L3RleHQ+Cjwvc3ZnPgo='); 
+        }
+        .mastercard { 
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCA0MCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iI0VCMDAxQiIvPgo8Y2lyY2xlIGN4PSIxNSIgY3k9IjEyIiByPSI3IiBmaWxsPSIjRkY1RjAwIiBmaWxsLW9wYWNpdHk9IjAuOCIvPgo8Y2lyY2xlIGN4PSIyNSIgY3k9IjEyIiByPSI3IiBmaWxsPSIjRkY1RjAwIiBmaWxsLW9wYWNpdHk9IjAuOCIvPgo8L3N2Zz4K'); 
+        }
+        .security-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .security-info i {
+            color: #0066cc;
+        }
+        .processing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .processing-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #c3ef62;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .success-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .success-content {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+        }
+        .success-icon {
+            color: #28a745;
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .row-spacing {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ナビゲーションメニュー -->
+    <nav class="navbar navbar-light navbar-expand-lg fixed-top" style="background-color:#c3ef62">
+        <a class="navbar-brand d-flex align-items-center text-dark" href="../index.html">
+            <i class="bi bi-cup-fill mr-2" style="font-size: 2rem;"></i> 茶茶
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ml-auto">
+                <a class="nav-link text-dark" href="../index.html">トップページ</a>
+                <a class="nav-link text-dark" href="../allproduct/allproduct.html">商品一覧</a>
+                <a class="nav-link text-dark" href="../sinndan/index.html">お茶診断</a>
+                <a class="nav-link text-dark" href="../contact/index.html">お問い合わせ</a>
+                <a class="nav-link text-dark" href="cart.html">
+                    <i class="bi bi-cart-fill"></i> カート (<span id="cartCount">0</span>)
+                </a>
+                <span class="navbar-text text-dark font-weight-bold" id="userInfo" style="display: none;"></span>
+                <a class="nav-link text-dark" href="../login/login.html" id="loginBtn">ログイン</a>
+                <a class="nav-link text-dark" href="#" id="logoutBtn" style="display: none;">ログアウト</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- メインコンテンツ -->
+    <div class="container py-4">
+        <div class="payment-container">
+            <!-- ヘッダー -->
+            <div class="payment-header">
+                <h2><i class="bi bi-credit-card-fill"></i> お支払い情報</h2>
+                <p class="mb-0">安全な決済システムで保護されています</p>
+            </div>
+
+            <div class="card-form">
+                <!-- 注文概要 -->
+                <div class="order-summary">
+                    <h4 class="mb-3"><i class="bi bi-cart-check-fill"></i> ご注文内容</h4>
+                    <div id="orderItems">
+                        <!-- 注文内容がここに表示されます -->
+                    </div>
+                </div>
+
+                <!-- カード情報入力フォーム -->
+                <form id="cardForm">
+                    <h4 class="mb-3"><i class="bi bi-credit-card"></i> カード情報</h4>
+                    
+                    <div class="row row-spacing">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="cardNumber">カード番号 *</label>
+                                <input type="text" class="form-control" id="cardNumber" 
+                                       placeholder="1234 5678 9012 3456" maxlength="19" required>
+                                <div class="mt-2">
+                                    <span class="card-icon visa" id="visaIcon" style="display: none;"></span>
+                                    <span class="card-icon mastercard" id="mastercardIcon" style="display: none;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="cardHolder">カード名義人 *</label>
+                                <input type="text" class="form-control" id="cardHolder" 
+                                       placeholder="YAMADA TARO" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="expiryMonth">有効期限 (月) *</label>
+                                <select class="form-control" id="expiryMonth" required>
+                                    <option value="">月を選択</option>
+                                    <option value="1">01</option>
+                                    <option value="2">02</option>
+                                    <option value="3">03</option>
+                                    <option value="4">04</option>
+                                    <option value="5">05</option>
+                                    <option value="6">06</option>
+                                    <option value="7">07</option>
+                                    <option value="8">08</option>
+                                    <option value="9">09</option>
+                                    <option value="10">10</option>
+                                    <option value="11">11</option>
+                                    <option value="12">12</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="expiryYear">有効期限 (年) *</label>
+                                <select class="form-control" id="expiryYear" required>
+                                    <option value="">年を選択</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row row-spacing">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="cvv">CVV *</label>
+                                <input type="text" class="form-control" id="cvv" 
+                                       placeholder="123" maxlength="4" required>
+                                <small class="form-text text-muted">
+                                    カード裏面の3桁の数字
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- セキュリティ情報 -->
+                    <div class="security-info">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-shield-lock-fill mr-2"></i>
+                            <span>お客様の個人情報は SSL暗号化によって保護されています</span>
+                        </div>
+                    </div>
+
+                    <!-- ボタン -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="button" class="btn btn-back" onclick="goBackToCart()">
+                            <i class="bi bi-arrow-left"></i> カートに戻る
+                        </button>
+                        <button type="submit" class="btn btn-payment flex-grow-1 ml-2" id="paymentBtn">
+                            <i class="bi bi-lock-fill"></i> 
+                            <span id="totalAmount">¥0</span> で決済する
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 処理中オーバーレイ -->
+    <div class="processing-overlay" id="processingOverlay" style="display: none;">
+        <div class="processing-content">
+            <div class="spinner"></div>
+            <h4>決済処理中...</h4>
+            <p>しばらくお待ちください</p>
+        </div>
+    </div>
+
+    <!-- 成功ポップアップ -->
+    <div class="success-popup" id="successPopup" style="display: none;">
+        <div class="success-content">
+            <i class="bi bi-check-circle-fill success-icon"></i>
+            <h3>購入完了!</h3>
+            <p>ご購入ありがとうございました。<br>商品一覧ページに移動します。</p>
+        </div>
+    </div>
+
+    <!-- ログアウト処理 -->
+    <script>
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('cart');
+            window.location.href = '../login/login.html';
+        });
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="card.js"></script>
+</body>
+</html>

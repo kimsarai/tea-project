@@ -56,6 +56,11 @@
             width: 60px;
             text-align: center;
         }
+        .alert-success {
+            border-color: #c3ef62;
+            background-color: #f0fff0;
+            color: #4b3b2a;
+        }
     </style>
 </head>
 <body>
@@ -78,7 +83,7 @@
                     <i class="bi bi-cart-fill"></i> カート (<span id="cartCount">0</span>)
                 </a>
                 <span class="navbar-text text-dark font-weight-bold" id="userInfo" style="display: none;"></span>
-                <a class="nav-link text-dark" href="../login.html" id="loginBtn">ログイン</a>
+                <a class="nav-link text-dark" href="./login/login.html" id="loginBtn">ログイン</a>
                 <a class="nav-link text-dark" href="#" id="logoutBtn" style="display: none;">ログアウト</a>
             </div>
         </div>
@@ -92,6 +97,12 @@
                     <i class="bi bi-cart-fill"></i> ショッピングカート
                 </h1>
             </div>
+        </div>
+        
+        <!-- 成功メッセージ -->
+        <div class="alert alert-success" id="successAlert" style="display: none;">
+            <i class="bi bi-check-circle-fill"></i> 
+            <span id="successMessage"></span>
         </div>
         
         <div class="row" id="cartContent">
@@ -145,99 +156,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    
-    <script>
-        const API_BASE_URL = 'http://localhost/api';
-        
-        // Default fallback tea images for different types
-        const fallbackTeaImages = {
-            '緑茶': 'https://d1f5hsy4d47upe.cloudfront.net/f3/f3ef8a7b20c85c257170c42cc848035e_t.jpeg',
-            '烏龍茶': 'https://t4.ftcdn.net/jpg/04/49/09/91/360_F_449099147_TKde64ncyA4rniDj1YLsKGhagBh97UbA.jpg',
-            '紅茶': 'https://imageslabo.com/wp-content/uploads/2019/05/206_hot-tea_6602.jpg',
-            'default': 'https://imageslabo.com/wp-content/uploads/2019/05/206_hot-tea_6602.jpg'
-        };
-
-        // ログイン状態の確認
-        function checkLoginStatus() {
-            const token = localStorage.getItem('access_token');
-            const username = localStorage.getItem('username');
-            
-            if (!token || !username) {
-                alert('ログインが必要です。');
-                window.location.href = '../login.html';
-                return false;
-            }
-            
-            const loginBtn = document.getElementById('loginBtn');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const userInfo = document.getElementById('userInfo');
-            
-            loginBtn.style.display = 'none';
-            logoutBtn.style.display = 'block';
-            userInfo.style.display = 'block';
-            userInfo.textContent = `${username}さん`;
-            
-            return true;
-        }
-
-        // 認証ヘッダーを取得
-        function getAuthHeaders() {
-            const token = localStorage.getItem('access_token');
-            return {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            };
-        }
-
-        // フォールバック画像を取得
-        function getFallbackImage(productName) {
-            const name = productName.toLowerCase();
-            if (name.includes('緑茶') || name.includes('green')) return fallbackTeaImages['緑茶'];
-            if (name.includes('烏龍茶') || name.includes('oolong')) return fallbackTeaImages['烏龍茶'];
-            if (name.includes('紅茶') || name.includes('black')) return fallbackTeaImages['紅茶'];
-            return fallbackTeaImages['default'];
-        }
-
-        // カート内容を表示
-        function displayCart() {
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const cartContent = document.getElementById('cartContent');
-            const emptyCart = document.getElementById('emptyCart');
-            
-            updateCartCount();
-            
-            if (cart.length === 0) {
-                cartContent.innerHTML = '';
-                emptyCart.style.display = 'block';
-                return;
-            }
-            
-            emptyCart.style.display = 'none';
-            
-            const cartItemsHtml = cart.map((item, index) => {
-                const itemTotal = item.price * item.quantity;
-                const fallbackImage = getFallbackImage(item.name);
-                
-                return `
-                    <div class="col-12">
-                        <div class="cart-item">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img src="${fallbackImage}" alt="${item.name}" class="img-fluid">
-                                </div>
-                                <div class="col-md-4">
-                                    <h6>${item.name}</h6>
-                                    <small class="text-muted">${item.gramWeight}g</small>
-                                </div>
-                                <div class="col-md-2">
-                                    <span class="font-weight-bold">¥${item.price.toLocaleString()}</span>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="quantity-controls">
-                                        <button class="btn btn-sm btn-outline-secondary" onclick="updateQuantity(${index}, -1)">
-                                            <i class="bi bi-dash"></i>
-                                        </button>
-                                        <input type="number" class="form-control quantity-input" 
-                                               value="${item.quantity}" min="1" 
-                                               onchange="setQuantity(${index}, this.value)">
-                                        <button class="btn btn-sm btn-outline-secondary" onclick="updateQuantity
+    <script src="cart.js"></script>
+</body>
+</html>

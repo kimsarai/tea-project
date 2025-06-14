@@ -1,6 +1,6 @@
-from datetime import date
+from datetime import date, datetime
 from sqlmodel import SQLModel, Field, Relationship
-from sqlalchemy import String, LargeBinary, Column, Integer, Boolean
+from sqlalchemy import String, LargeBinary, Column, Integer, Boolean, DateTime
 import base64
 
 #database 
@@ -11,6 +11,51 @@ class User(SQLModel, table=True):
     email: str = Field(index=True, unique=True)
     hashed_password: str
     is_active: bool = Field(default=True)
+    
+    # 購入履歴との関係
+    purchases: list["Purchase"] = Relationship(back_populates="user")
+    # ユーザー詳細情報との関係
+    user_details: "UserDetails" = Relationship(back_populates="user")
+    # カード情報との関係
+    card_info: "CardInfo" = Relationship(back_populates="user")
+
+
+class UserDetails(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", unique=True)
+    
+    # 個人情報
+    first_name: str | None = Field(default=None)
+    last_name: str | None = Field(default=None)
+    phone_number: str | None = Field(default=None)
+    address: str | None = Field(default=None)
+    postal_code: str | None = Field(default=None)
+    city: str | None = Field(default=None)
+    prefecture: str | None = Field(default=None)
+    
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    # リレーションシップ
+    user: User = Relationship(back_populates="user_details")
+
+
+class CardInfo(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", unique=True)
+    
+    # カード情報（実際の実装では暗号化して保存することを強く推奨）
+    card_number: str = Field()  # 実際の実装では暗号化必須
+    card_holder_name: str = Field()
+    card_expiry_month: int = Field()
+    card_expiry_year: int = Field()
+    card_cvv: int = Field()  # 実際の実装では暗号化必須
+    
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    # リレーションシップ
+    user: User = Relationship(back_populates="card_info")
 
 
 class Product (SQLModel, table=True):
@@ -22,6 +67,8 @@ class Product (SQLModel, table=True):
     image_data: str = Column(None, LargeBinary(length=(2**32)-1), nullable=False)
 
     feature: list["Feature"] = Relationship(back_populates="product")
+    # 購入履歴との関係
+    purchases: list["Purchase"] = Relationship(back_populates="product")
     
 class Feature (SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -39,3 +86,18 @@ class Feature (SQLModel, table=True):
     creamy: int = Field()
 
 
+class Purchase(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    product_id: int = Field(foreign_key="product.id")
+    quantity: int = Field(default=1)
+    purchase_price: float = Field()  # 購入時の価格を記録
+    purchase_date: datetime = Field(default_factory=datetime.utcnow)
+    
+    # 支払い情報
+    payment_status: str = Field(default="pending")  # pending, completed, failed
+    transaction_id: str | None = Field(default=None)
+    
+    # リレーションシップ
+    user: User = Relationship(back_populates="purchases")
+    product: Product = Relationship(back_populates="purchases")
