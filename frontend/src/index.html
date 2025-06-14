@@ -42,6 +42,11 @@
         .btn-custom:hover {
             background-color: #8bb06f;
         }
+
+        .user-info {
+            color: #4b3b2a;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -60,6 +65,12 @@
                 <a class="nav-link text-dark" href="./allproduct/allproduct.html">商品一覧</a>
                 <a class="nav-link text-dark" href="./sinndan/index.html">お茶診断</a>
                 <a class="nav-link text-dark" href="./contact/index.html">お問い合わせ</a>
+                <a class="nav-link text-dark" href="./cart/cart.html" id="cartLink" style="display: none;">
+                    <i class="bi bi-cart-fill"></i> カート
+                </a>
+                <span class="navbar-text user-info" id="userInfo" style="display: none;"></span>
+                <a class="nav-link text-dark" href="#" id="loginBtn">ログイン</a>
+                <a class="nav-link text-dark" href="#" id="logoutBtn" style="display: none;">ログアウト</a>
             </div>
         </div>
     </nav>
@@ -75,7 +86,6 @@
         
     <!-- サービス紹介 -->
     <div id="about" class="container section text-center">
-    <!-- div id="diagnosis" class="section bg-light text-center" style="margin-top: 100px;"-->
         <h2 class="mb-4">サービスの特徴</h2>
         <div class="row">
             <div class="col-md-4">
@@ -110,7 +120,7 @@
         <div class="container">
             <h2 class="mb-4">お問い合わせ</h2>
             <p>ご質問・ご相談はお気軽にどうぞ。</p>
-            <a href="#" class="btn btn-outline-secondary">フォームへ</a>
+            <a href="./contact/index.html" class="btn btn-outline-secondary">フォームへ</a>
         </div>
     </div>
 
@@ -118,6 +128,53 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    
+    <script>
+        // ログイン状態の確認
+        function checkLoginStatus() {
+            const token = localStorage.getItem('access_token');
+            const username = localStorage.getItem('username');
+            
+            const loginBtn = document.getElementById('loginBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const userInfo = document.getElementById('userInfo');
+            const cartLink = document.getElementById('cartLink');
+            
+            if (token && username) {
+                // ログイン済み
+                loginBtn.style.display = 'none';
+                logoutBtn.style.display = 'block';
+                userInfo.style.display = 'block';
+                userInfo.textContent = `${username}さん`;
+                cartLink.style.display = 'block';
+            } else {
+                // 未ログイン
+                loginBtn.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                userInfo.style.display = 'none';
+                cartLink.style.display = 'none';
+            }
+        }
+
+        // ログインボタンのクリック処理
+        document.getElementById('loginBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = 'login.html';
+        });
+
+        // ログアウトボタンのクリック処理
+        document.getElementById('logoutBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('cart');
+            checkLoginStatus();
+            alert('ログアウトしました');
+        });
+
+        // ページ読み込み時にログイン状態をチェック
+        document.addEventListener('DOMContentLoaded', checkLoginStatus);
+    </script>
 </body>
 
 </html>
