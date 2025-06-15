@@ -14,30 +14,9 @@ class User(SQLModel, table=True):
     
     # 購入履歴との関係
     purchases: list["Purchase"] = Relationship(back_populates="user")
-    # ユーザー詳細情報との関係
-    user_details: "UserDetails" = Relationship(back_populates="user")
     # カード情報との関係
     card_info: "CardInfo" = Relationship(back_populates="user")
 
-
-class UserDetails(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    user_id: int = Field(foreign_key="user.id", unique=True)
-    
-    # 個人情報
-    first_name: str | None = Field(default=None)
-    last_name: str | None = Field(default=None)
-    phone_number: str | None = Field(default=None)
-    address: str | None = Field(default=None)
-    postal_code: str | None = Field(default=None)
-    city: str | None = Field(default=None)
-    prefecture: str | None = Field(default=None)
-    
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
-    
-    # リレーションシップ
-    user: User = Relationship(back_populates="user_details")
 
 
 class CardInfo(SQLModel, table=True):
@@ -49,7 +28,7 @@ class CardInfo(SQLModel, table=True):
     card_holder_name: str = Field()
     card_expiry_month: int = Field()
     card_expiry_year: int = Field()
-    card_cvv: int = Field()  # 実際の実装では暗号化必須
+    card_cvv: str = Field()  # 実際の実装では暗号化必須
     
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
