@@ -4,18 +4,9 @@ const PRODUCTS_PER_PAGE = 6;
 
 // State management
 let currentPage = 1;
-let totalProducts = 0;
 let isLoading = false;
 let cart = [];
 let isLoggedIn = false;
-
-// Default fallback tea images for different types
-const fallbackTeaImages = {
-    '緑茶': 'https://d1f5hsy4d47upe.cloudfront.net/f3/f3ef8a7b20c85c257170c42cc848035e_t.jpeg',
-    '烏龍茶': 'https://t4.ftcdn.net/jpg/04/49/09/91/360_F_449099147_TKde64ncyA4rniDj1YLsKGhagBh97UbA.jpg',
-    '紅茶': 'https://imageslabo.com/wp-content/uploads/2019/05/206_hot-tea_6602.jpg',
-    'default': 'https://imageslabo.com/wp-content/uploads/2019/05/206_hot-tea_6602.jpg'
-};
 
 // DOM elements
 const productsContainer = document.getElementById('productsContainer');
@@ -41,20 +32,22 @@ function checkLoginStatus() {
 
     if (isLoggedIn) {
         // ログイン済み
-        loginBtn.style.display = 'none';
-        logoutBtn.style.display = 'block';
-        userInfo.style.display = 'block';
-        userInfo.textContent = `${username}さん`;
-        cartLink.style.display = 'block';
+        if (loginBtn) loginBtn.style.display = 'none';
+        if (logoutBtn) logoutBtn.style.display = 'block';
+        if (userInfo) {
+            userInfo.style.display = 'block';
+            userInfo.textContent = `${username}さん`;
+        }
+        if (cartLink) cartLink.style.display = 'block';
         document.body.classList.remove('not-logged-in');
         loadCartFromStorage();
         updateCartCount();
     } else {
         // 未ログイン
-        loginBtn.style.display = 'block';
-        logoutBtn.style.display = 'none';
-        userInfo.style.display = 'none';
-        cartLink.style.display = 'none';
+        if (loginBtn) loginBtn.style.display = 'block';
+        if (logoutBtn) logoutBtn.style.display = 'none';
+        if (userInfo) userInfo.style.display = 'none';
+        if (cartLink) cartLink.style.display = 'none';
         document.body.classList.add('not-logged-in');
         cart = [];
     }
@@ -78,13 +71,19 @@ function updateCartCount() {
     }
 }
 
-// 認証ヘッダーを取得
-function getAuthHeaders() {
-    const token = localStorage.getItem('access_token');
-    return {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
-    };
+// ログインページにリダイレクト
+function redirectToLogin() {
+    alert('商品を購入するにはログインが必要です。');
+    window.location.href = '../login/login.html';
+}
+
+// Base64の検証
+function isValidBase64(str) {
+    try {
+        return btoa(atob(str)) == str;
+    } catch (err) {
+        return false;
+    }
 }
 
 // 商品画像を取得
@@ -98,25 +97,7 @@ function getProductImage(product) {
             return product.image_data;
         }
     }
-    return getFallbackImage(product.product_name);
-}
-
-// Base64の検証
-function isValidBase64(str) {
-    try {
-        return btoa(atob(str)) == str;
-    } catch (err) {
-        return false;
-    }
-}
-
-// フォールバック画像を取得
-function getFallbackImage(productName) {
-    const name = productName.toLowerCase();
-    if (name.includes('緑茶') || name.includes('green')) return fallbackTeaImages['緑茶'];
-    if (name.includes('烏龍茶') || name.includes('oolong')) return fallbackTeaImages['烏龍茶'];
-    if (name.includes('紅茶') || name.includes('black')) return fallbackTeaImages['紅茶'];
-    return fallbackTeaImages['default'];
+    return null;
 }
 
 // 商品カードのHTMLを作成
@@ -130,62 +111,57 @@ function createProductCard(product) {
     let buttonHtml;
     if (!isLoggedIn) {
         buttonHtml = `
-                    <button type="button" 
-                            class="btn btn-outline-primary login-required-btn" 
-                            onclick="redirectToLogin()"
-                            style="display: block; margin: auto">
-                        ログインして購入
-                        <i class="bi bi-box-arrow-in-right"></i>
-                    </button>
-                `;
+            <button type="button" 
+                    class="btn btn-outline-primary login-required-btn" 
+                    onclick="redirectToLogin()"
+                    style="display: block; margin: auto">
+                ログインして購入
+                <i class="bi bi-box-arrow-in-right"></i>
+            </button>
+        `;
     } else if (isOutOfStock) {
         buttonHtml = `
-                    <button type="button" 
-                            class="btn btn-outline-secondary" 
-                            disabled
-                            style="display: block; margin: auto">
-                        在庫切れ
-                        <i class="bi bi-x-circle"></i>
-                    </button>
-                `;
+            <button type="button" 
+                    class="btn btn-outline-secondary" 
+                    disabled
+                    style="display: block; margin: auto">
+                在庫切れ
+                <i class="bi bi-x-circle"></i>
+            </button>
+        `;
     } else {
         buttonHtml = `
-                    <button type="button" 
-                            class="btn btn-outline-success purchase-btn" 
-                            onclick="addToCart(${product.id}, '${product.product_name.replace(/'/g, "\\'")}', ${product.price}, ${product.gram_weight})"
-                            style="display: block; margin: auto">
-                        カートに入れる
-                        <i class="bi bi-cart-plus"></i>
-                    </button>
-                `;
+            <button type="button" 
+                    class="btn btn-outline-success purchase-btn" 
+                    onclick="addToCart(${product.id}, '${product.product_name.replace(/'/g, "\\'")}', ${product.price}, ${product.gram_weight})"
+                    style="display: block; margin: auto">
+                カートに入れる
+                <i class="bi bi-cart-plus"></i>
+            </button>
+        `;
     }
 
     return `
-                <div class="col-sm-6 col-md-4 mb-4">
-                    <div class="card">
-                        <img src="${productImage}" 
-                             class="card-img-top" 
-                             alt="${product.product_name}"
-                             onerror="this.src='${getFallbackImage(product.product_name)}'"
-                             loading="lazy">
-                        <div class="card-body">
-                            <h5 class="card-title">${product.product_name}</h5>
-                            <div class="price-tag">¥${product.price.toLocaleString()}</div>
-                            <p class="card-text">
-                                重量: ${product.gram_weight}g<br>
-                                <span class="${stockClass}">${stockText}</span>
-                            </p>
-                            ${buttonHtml}
-                        </div>
-                    </div>
+        <div class="col-sm-6 col-md-4 mb-4">
+            <div class="card">
+                ${productImage ? `
+                    <img src="${productImage}" 
+                         class="card-img-top" 
+                         alt="${product.product_name}"
+                         loading="lazy">
+                ` : ''}
+                <div class="card-body">
+                    <h5 class="card-title">${product.product_name}</h5>
+                    <div class="price-tag">¥${product.price.toLocaleString()}</div>
+                    <p class="card-text">
+                        重量: ${product.gram_weight}g<br>
+                        <span class="${stockClass}">${stockText}</span>
+                    </p>
+                    ${buttonHtml}
                 </div>
-            `;
-}
-
-// ログインページにリダイレクト
-function redirectToLogin() {
-    alert('商品を購入するにはログインが必要です。');
-    window.location.href = '../login/login.html';
+            </div>
+        </div>
+    `;
 }
 
 // APIから商品を取得
@@ -206,10 +182,6 @@ async function fetchProducts(page = 1) {
 
         const products = await response.json();
 
-        if (page === 1) {
-            totalProducts = products.length < PRODUCTS_PER_PAGE ? products.length : products.length * 10;
-        }
-
         displayProducts(products);
         updatePagination(page, products.length);
         currentPage = page;
@@ -227,10 +199,10 @@ async function fetchProducts(page = 1) {
 function displayProducts(products) {
     if (products.length === 0) {
         productsContainer.innerHTML = `
-                    <div class="col-12 text-center">
-                        <p class="lead">商品が見つかりませんでした。</p>
-                    </div>
-                `;
+            <div class="col-12 text-center">
+                <p class="lead">商品が見つかりませんでした。</p>
+            </div>
+        `;
         return;
     }
 
@@ -316,10 +288,13 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchProducts(1);
 
     // ログアウトボタンのイベントリスナー
-    document.getElementById('logoutBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        logout();
-    });
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
 
     // ページネーションのイベントリスナー
     prevBtn.addEventListener('click', () => {

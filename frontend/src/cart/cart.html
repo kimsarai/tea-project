@@ -83,7 +83,7 @@
                     <i class="bi bi-cart-fill"></i> カート (<span id="cartCount">0</span>)
                 </a>
                 <span class="navbar-text text-dark font-weight-bold" id="userInfo" style="display: none;"></span>
-                <a class="nav-link text-dark" href="./login/login.html" id="loginBtn">ログイン</a>
+                <a class="nav-link text-dark" href="../login/login.html" id="loginBtn">ログイン</a>
                 <a class="nav-link text-dark" href="#" id="logoutBtn" style="display: none;">ログアウト</a>
             </div>
         </div>
@@ -105,8 +105,9 @@
             <span id="successMessage"></span>
         </div>
         
-        <div class="row" id="cartContent">
-            <!-- カート内容がここに表示されます -->
+        <!-- カート内容 -->
+        <div id="cartContent">
+
         </div>
         
         <!-- 空のカート表示 -->
@@ -118,35 +119,20 @@
                 商品一覧を見る
             </a>
         </div>
-    </div>
 
-    <!-- 購入確認モーダル -->
-    <div class="modal fade" id="purchaseModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">購入確認</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>以下の商品を購入しますか？</p>
-                    <div id="purchaseItemsList"></div>
-                    <hr>
-                    <div class="d-flex justify-content-between font-weight-bold">
-                        <span>合計金額:</span>
-                        <span id="purchaseTotal">¥0</span>
+        <!-- 合計セクション（静的構造） -->
+        <div class="row" id="totalSection" style="display: none;">
+            <div class="col-12">
+                <div class="total-section">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5>合計金額</h5>
+                        <h4 class="text-success" id="totalAmount">¥0</h4>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">キャンセル</button>
-                    <button type="button" class="btn btn-custom" id="confirmPurchaseBtn">
-                        <span id="purchaseLoading" style="display: none;">
-                            <span class="spinner-border spinner-border-sm" role="status"></span>
-                            処理中...
-                        </span>
-                        <span id="purchaseText">購入する</span>
+                    <button class="btn btn-custom btn-lg btn-block" onclick="proceedToPayment()">
+                        <i class="bi bi-credit-card"></i> 購入する
+                    </button>
+                    <button class="btn btn-outline-secondary btn-block mt-2" onclick="clearCart()">
+                        カートを空にする
                     </button>
                 </div>
             </div>

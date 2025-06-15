@@ -1,123 +1,44 @@
-async function fetchItems() {
-    try {
-        const response = await fetch("http://localhost/api/items");
+// ログイン状態の確認
+function checkLoginStatus() {
+    const token = localStorage.getItem('access_token');
+    const username = localStorage.getItem('username');
 
-        if (!response.ok) {
-            throw new Error(`HTTPエラー: ${response.status}`);
-        }
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const userInfo = document.getElementById('userInfo');
+    const cartLink = document.getElementById('cartLink');
 
-        const data = await response.json();
-        console.log("Fetched items:", data);
-
-        const list = document.getElementById("itemsList");
-        list.innerHTML = "";
-
-        data.forEach(item => {
-            const li = document.createElement("li");
-
-            // アイテムタイトルを表示
-            const title = document.createElement("span");
-            title.textContent = `${item.id}: ${item.title}`;
-
-            // `Base64` をデコードせずそのまま表示
-            const img = document.createElement("img");
-
-            // `atob()` を使わずに `Base64` のままセット
-            img.src = `data:image/png;base64,${item.image_data}`;  
-            img.alt = "アイテム画像";
-            img.style.width = "100px";  
-            img.style.height = "100px";
-
-
-            // 要素を追加
-            li.appendChild(title);
-            li.appendChild(img);
-            list.appendChild(li);
-        });
-    } catch (error) {
-        console.error("Error fetching items:", error);
+    if (token && username) {
+        // ログイン済み
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'block';
+        userInfo.style.display = 'block';
+        userInfo.textContent = `${username}さん`;
+        cartLink.style.display = 'block';
+    } else {
+        // 未ログイン
+        loginBtn.style.display = 'block';
+        logoutBtn.style.display = 'none';
+        userInfo.style.display = 'none';
+        cartLink.style.display = 'none';
     }
 }
 
-async function addItem() {
-    const titleInput = document.getElementById("itemTitle");
-    const fileInput = document.getElementById("itemImage");
+// ログインボタンのクリック処理
+document.getElementById('loginBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = 'login/login.html';
+});
 
-    const title = titleInput.value.trim();
-    const file = fileInput.files[0]; // ファイル取得
+// ログアウトボタンのクリック処理
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('cart');
+    checkLoginStatus();
+    alert('ログアウトしました');
+});
 
-    if (!title || !file) {
-        alert("タイトルと画像を入力してください");
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("file", file);
-
-    try {
-        const response = await fetch("http://localhost/api/items", {
-            method: "POST",
-            body: formData
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTPエラー: ${response.status}`);
-        }
-
-        const newItem = await response.json();
-        console.log("Added item:", newItem);
-
-        // UI に即時反映
-        fetchItems();
-
-        // 入力欄をクリア
-        titleInput.value = "";
-        fileInput.value = "";
-    } catch (error) {
-        console.error("Error adding item:", error);
-    }
-}
-
-// ボタンのイベントリスナーを設定
-document.getElementById("fetchBtn").addEventListener("click", fetchItems);
-document.getElementById("addItemBtn").addEventListener("click", addItem);
-
-
-// アイテム追加
-async function addItem() {
-    const titleInput = document.getElementById("itemTitle");
-    const fileInput = document.getElementById("itemImage"); 
-
-    const title = titleInput.value.trim();
-    const file = fileInput.files[0]; 
-
-    if (!title || !file) {
-        alert("タイトルと画像を入力してください");
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("file", file);
-
-    try {
-        const response = await fetch("http://localhost/api/items", {
-            method: "POST",
-            body: formData 
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTPエラー: ${response.status}`);
-        }
-
-        const newItem = await response.json();
-        console.log("Added item:", newItem);
-
-        titleInput.value = "";
-        fileInput.value = "";
-    } catch (error) {
-        console.error("Error adding item:", error);
-    }
-}
-
+// ページ読み込み時にログイン状態をチェック
+document.addEventListener('DOMContentLoaded', checkLoginStatus);

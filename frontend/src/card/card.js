@@ -4,7 +4,7 @@ const API_BASE_URL = 'http://localhost:8000';
 document.addEventListener('DOMContentLoaded', function () {
     if (checkLoginStatus()) {
         displayOrderSummary();
-        initializeExpiryYears();
+        initializeExpiryOptions();
         setupCardNumberFormatting();
         setupFormValidation();
     }
@@ -37,6 +37,18 @@ function checkLoginStatus() {
 
     return true;
 }
+
+// ログアウト処理
+function logout() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('username');
+    localStorage.removeItem('cart');
+    cart = [];
+    isLoggedIn = false;
+    alert('ログアウトしました');
+    window.location.href = '../allproduct/allproduct.html';
+}
+
 
 // 認証ヘッダーを取得
 function getAuthHeaders() {
@@ -99,16 +111,29 @@ function displayOrderSummary() {
     document.getElementById('totalAmount').textContent = `¥${totalAmount.toLocaleString()}`;
 }
 
-// 有効期限の年を初期化
-function initializeExpiryYears() {
+// 有効期限の選択肢を初期化
+function initializeExpiryOptions() {
+    const monthSelect = document.getElementById('expiryMonth');
+    const yearSelect = document.getElementById('expiryYear');
+    
+    // 月の選択肢を生成
+    monthSelect.innerHTML = '<option value="">月を選択</option>';
+    for (let month = 1; month <= 12; month++) {
+        const monthStr = month.toString().padStart(2, '0');
+        const option = document.createElement('option');
+        option.value = month;
+        option.textContent = monthStr;
+        monthSelect.appendChild(option);
+    }
+    
+    // 年の選択肢を生成（現在年から10年後まで）
     const currentYear = new Date().getFullYear();
-    const expiryYear = document.getElementById('expiryYear');
-
+    yearSelect.innerHTML = '<option value="">年を選択</option>';
     for (let year = currentYear; year <= currentYear + 10; year++) {
         const option = document.createElement('option');
         option.value = year;
         option.textContent = year;
-        expiryYear.appendChild(option);
+        yearSelect.appendChild(option);
     }
 }
 
@@ -296,3 +321,15 @@ function validateCardData(cardData) {
 
     return true;
 }
+
+// イベントリスナー
+document.addEventListener('DOMContentLoaded', () => {
+    // ログアウトボタンのイベントリスナー
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+    }
+});
